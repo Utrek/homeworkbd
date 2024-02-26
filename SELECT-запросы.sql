@@ -64,9 +64,9 @@ select e.name from executors e
 join executorsalbums e3 on e3.executor_id = e.executor_id
 join albums a on a.album_id = e3.album_id
 join treks t on t.album_id = a.album_id 
-where duration = (select Min(duration) from treks)
+where duration = (select Min(duration) from treks);
 
-select distinct a.name, count(*) from albums a 
+select a.name, count(*) from albums a 
 join treks t on t.album_id = a.album_id
 group by a.name 
 order by count(*)
