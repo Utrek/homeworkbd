@@ -34,9 +34,9 @@ join albums a on a.album_id = t.album_id
 group by a.name;
 
 select e.name from executors e
-join executorsalbums e2 on e.executor_id = e2.executor_id 
-join albums a on a.album_id = e2.album_id 
-where year_of_issue != 2020
+where e.name != (select e3.name from executors e3 
+join executorsalbums e2 on e3.executor_id = e2.executor_id 
+join albums a on a.album_id = e2.album_id  where a.year_of_issue = 2020)
 group by e.name; 
 
 select distinct c.name from collections c 
@@ -60,17 +60,26 @@ SELECT t1.name FROM treks t1
 WHERE NOT EXISTS ( SELECT 1 FROM trekscollections t2
 WHERE t1.trek_id = t2.trek_id);
 
+SELECT t2.name FROM treks t2 
+LEFT JOIN trekscollections t  ON t2.trek_id  = t.trek_id 
+WHERE t.trek_id  IS NULL;
+
 select e.name from executors e 
 join executorsalbums e3 on e3.executor_id = e.executor_id
 join albums a on a.album_id = e3.album_id
 join treks t on t.album_id = a.album_id 
 where duration = (select Min(duration) from treks);
 
-select a.name, count(*) from albums a 
+select a.name  from albums a 
+join treks t on t.album_id = a.album_id
+group by a.name
+having count(*) <= (select count(*) from albums a 
 join treks t on t.album_id = a.album_id
 group by a.name 
 order by count(*)
-limit 1;
+limit 1);
+
+
 
 
 
